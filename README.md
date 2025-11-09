@@ -1,2 +1,2 @@
 # Fun-Stuff
-Just has fun stuff
+I put anything I find to be intresting in here.
