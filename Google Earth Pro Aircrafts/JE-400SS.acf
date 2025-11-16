@@ -1,0 +1,208 @@
+%
+% F-16 Flight Model Configuration File
+%
+
+model_name = 'F-16 Fighting Falcon'   % Name of the aircraft
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Minimum eyepoint distance to objects.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+d_E_min = 4   % Minimum distance (meters) that the camera/eyepoint can be
+              % from objects (prevents clipping inside geometry)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Approach speed, power and flap setting.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+V_approach = 100     % Typical approach speed (units depend on sim, usually knots)
+D_F_approach = .4    % Flap setting during approach (normalized: 0 = none, 1 = full)
+D_P_approach = .1    % Power setting during approach (normalized throttle)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Cruise speed, power and flap setting.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+V_cruise = 330       % Typical cruise speed
+D_F_cruise = 0       % Flaps retracted in cruise
+D_P_cruise = .4      % Power setting in cruise (normalized throttle)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Constants for terrain elevation filters.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+spring_e_T = 80      % Spring constant for smoothing terrain elevation input
+damper_e_T = 15      % Damping coefficient for smoothing terrain elevation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Spring/damper constants for camera rotation.
+% Critical damping: spring = damper^2/4.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+spring_vertical = 80    % Vertical spring stiffness (camera rotation smoothing)
+damper_vertical = 15    % Vertical damping coefficient
+spring_horizontal = 80  % Horizontal spring stiffness
+damper_horizontal = 15  % Horizontal damping coefficient
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Collision vertices (x, y, z coordinates in meters).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p_v = [
+  % Main landing gear contact points
+  [ -10.16 -1.95 .05 ]   % Left main gear
+  [ -10.16  1.95 .05 ]   % Right main gear
+
+  % Nose gear
+  [ -4.02  0    .05 ]    % Nose wheel contact point
+
+  % Top of vertical stabilizer
+  [ -14.15 -2.4 -4.50 ]  % Left side of tail fin top
+  [ -14.15  2.4 -4.50 ]  % Right side of tail fin top
+
+  % Belly point for gear-up landings
+  [ -7.73 0 -1.39 ]
+
+  % Nose tip
+  [ 0 0 -2.3 ]
+
+  % Wingtip points (progressively further outboard)
+  [ -7.50 -1.76 -2.43 ]
+  [ -7.50  1.76 -2.43 ]
+  [ -8.13 -2.22 -2.43 ]
+  [ -8.13  2.22 -2.43 ]
+  [ -8.66 -3.13 -2.43 ]
+  [ -8.66  3.13 -2.43 ]
+  [ -9.18 -3.98 -2.43 ]
+  [ -9.18  3.98 -2.43 ]
+  [ -9.47 -4.82 -2.43 ]
+  [ -9.47  4.82 -2.43 ]
+  [ -10.36 -5.66 -2.43 ]
+  [ -10.36  5.66 -2.43 ]
+  [ -10.97 -5.66 -2.43 ]
+  [ -10.97  5.66 -2.43 ]
+  [ -11.58 -5.66 -2.43 ]
+  [ -11.58  5.66 -2.43 ]
+  [ -12.19 -3.75 -2.43 ]
+  [ -12.19  3.75 -2.43 ]
+  [ -12.55 -1.72 -2.43 ]
+  [ -12.55  1.72 -2.43 ]
+
+  % Elevator tips
+  [ -14.68 -3.93 -2.26 ]
+  [ -14.68  3.93 -2.26 ]
+]
+
+% Main/nose gear (first 3 vertices) disappear when gear retracts
+first_fixed = 3
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Landing gear suspension model.
+% Format: [rest_length spring_constant damping friction max_force]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+spring_damper = [
+  [ 2500 500e3 100e3 .05 800e3 ]   % Left main gear suspension
+  [ 2500 500e3 100e3 .05 800e3 ]   % Right main gear suspension
+  [ 1500 500e3 100e3 .05 800e3 ]   % Nose gear suspension
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tire contact patch model.
+% Format: [rolling_resistance base_friction cornering_stiffness 
+%          aligning_stiffness spring_constant damping
+%          max_friction_x max_friction_y relaxation_length delta_alpha]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+contact_patch = [
+  [ 81 .003 64e3 6e4  180e3 100e3 .8 .5 1.4 0   ]   % Left main tire
+  [ 81 .003 64e3 6e4  180e3 100e3 .8 .5 1.4 0   ]   % Right main tire
+  [ 81 .003 64e3 6e4  180e3 100e3 .8 .1 1.4 .3  ]   % Nose tire (less side friction)
+]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Power plant (engine model).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+P_max = 40000e7          % Maximum power output (W)
+F_max = 40000e3          % Maximum thrust (N)
+P_ratio_reverse = 0     % Reverse thrust ratio (0 = none)
+P_ratio_alpha = 1.2     % Thrust multiplier vs angle of attack
+p_T_v = [ [ -14.26 0 -2.19 ] ]   % Engine nozzle position
+d_T_v = [ [ 1 0 -0.15 ] ]        % Thrust direction vector
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Pilot eyepoint (cockpit camera position).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+p_E_v = [ -3.59 0 -3.14 ]   % Pilot head position
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Reference geometry.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+b = 10.9      % Wingspan (m)
+c_bar = 4.45  % Mean aerodynamic chord (m)
+
+% Collision reference scaling (unused, left at 1)
+d_ref = 1
+v_ref = 1
+F_ref = 1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Mass and inertia.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+m = 17782   % Mass (kg)
+
+J = [        % Inertia tensor (kg·m^2)
+  [ 12800 0     1330  ]   % Roll inertia, coupling
+  [ 0     57600 0     ]   % Pitch inertia
+  [ 1330  0     85500 ]   % Yaw inertia
+]
+
+% Center of mass (CM) and aerodynamic center (AC)
+p_CM_v = [ -9.50 0 -2.90 ]   % Center of mass
+p_AC_v = [ -9.50 0 -2.90 ]   % Aerodynamic center (same as CM here)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Aerodynamics coefficients.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Force coefficients
+alpha_z_0_deg = -.3         % Zero-lift angle of attack (deg)
+dalpha_z_deg_dDF = -11      % Change in AoA with flaps (deg per flap fraction)
+C_D_0 = 0                   % Base drag coefficient
+dC_D_dDG = .02              % Drag increase with gear
+dC_D_dDF = .03              % Drag increase with flaps
+dC_L_dalpha_deg = .06       % Lift curve slope per degree AoA
+dC_L_dS = -1.2              % Lift slope change with spoiler
+C_L_max_0 = 2.1             % Max lift coefficient at 0 flap
+dC_L_max_dDF = 1.2          % Flaps increase CL_max
+d2C_D_dC_L2 = 0.264818      % Induced drag quadratic term
+d2C_D_dC_Y2 = .8            % Additional drag from side force
+dC_Y_dDR = 0                % No direct rudder side force effect
+dC_Y_dbeta_deg = .008       % Side force per degree sideslip
+dC_Y_dp_hat = 0             % No side force due to roll rate
+dC_Y_dr_hat = 0             % No side force due to yaw rate
+
+% Pitching moments
+C_m_0 = 0                   % Base pitch moment coefficient
+dC_m_dDE = .1               % Elevator effectiveness
+dC_m_dDE_T = .06            % Tailplane elevator effectiveness
+dC_m_dDF = 0                % Pitch moment change with flaps
+dC_m_dDG = 0                % Pitch moment change with gear
+dC_m_dS = -.15              % Pitch moment change with spoiler
+dC_m_dq_hat = -18           % Pitch damping coefficient
+dC_m_dalpha_deg = -.008     % Static stability (Cm vs AoA slope)
+d2C_m_dbeta2 = 0            % Pitch coupling with sideslip squared
+
+% Rolling moments
+dC_l_dDA = .001             % Aileron effectiveness
+dC_l_dDR = 0                % Rudder roll coupling
+dC_l_dbeta_deg = 0          % No dihedral effect
+dC_l_dp_hat_0 = -.15        % Roll damping
+dC_l_dr_hat_0 = 0           % Yaw-to-roll coupling
+ddC_l_dp_hat_0_dS = 2       % Spoiler effect on roll damping
+ddC_l_dr_hat_0_dS = 1       % Spoiler effect on yaw-to-roll
+dC_l_dp_hat_max = .01       % Max roll damping clamp
+
+% Yawing moments
+dC_n_dDA = -.01             % Aileron adverse yaw
+dC_n_dDR = .03              % Rudder effectiveness
+dC_n_dbeta_deg = 0.0015     % Weathercock stability (yaw vs sideslip)
+dC_n_dp_hat = 0             % No yaw due to roll rate
+dC_n_dr_hat = -3            % Yaw damping
+
+% Quadratic damping terms (nonlinear effects at high rates)
+d2C_m_dq_hat2 = -5          % Strong pitch damping at high q
+d2C_l_dp_hat2 = -5          % Strong roll damping at high p
+d2C_n_dr_hat2 = -1          % Strong yaw damping at high r
